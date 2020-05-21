@@ -58,11 +58,11 @@ class User extends BaseEntity {
   @OneToMany((type) => Verification, (verification) => verification.user)
   verifications: Verification[];
 
-  @OneToMany((type) => Ride, (ride) => ride.driver)
-  ridesAsDriver: Ride;
-
   @OneToMany((type) => Ride, (ride) => ride.passenger)
-  ridesAsPassenger: Ride;
+  ridesAsPassenger: Ride[];
+
+  @OneToMany((type) => Ride, (ride) => ride.driver)
+  ridesAsDriver: Ride[];
 
   @Column({ type: "boolean", default: false })
   isDriving: boolean;
@@ -81,6 +81,9 @@ class User extends BaseEntity {
 
   @Column({ type: "double precision", default: 0 })
   lastOrientation: number;
+
+  @Column({ type: "text", nullable: true })
+  fbld: string;
 
   @CreateDateColumn()
   createAt: string;
