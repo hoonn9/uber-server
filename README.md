@@ -6,10 +6,10 @@ uber clone server
 
 ### Public Resolvers:
 
-[ ] Sigin In / Sign Up with Facebook
-[ ] Sign In with Email
-[ ] Start Phone Number Verification
-[ ] Complete Phone Number Verification
+[x] Sigin In / Sign Up with Facebook
+[x] Sign In with Email
+[x] Start Phone Number Verification
+[x] Complete Phone Number Verification
 [ ] Sign Up with Email
 
 ### Private Resolvers:

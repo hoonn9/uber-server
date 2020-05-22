@@ -2,8 +2,8 @@ type Chat {
   id: Int!
   messages: [Message]!
   participants: [User]!
-  createAt: String!
-  updateAt: String
+  createdAt: String!
+  updatedAt: String
 }
 
 type Message {
@@ -11,8 +11,8 @@ type Message {
   text: String!
   chat: Chat!
   user: User!
-  createAt: String!
-  updateAt: String
+  createdAt: String!
+  updatedAt: String
 }
 
 type Place {
@@ -22,8 +22,8 @@ type Place {
   lng: Float!
   address: String!
   isFav: Boolean!
-  createAt: String!
-  updateAt: String
+  createdAt: String!
+  updatedAt: String
 }
 
 type Ride {
@@ -40,18 +40,33 @@ type Ride {
   passenger: User!
   distance: String!
   duration: String!
-  createAt: String!
-  updateAt: String
+  createdAt: String!
+  updatedAt: String
 }
 
-type FacebookConnectResponse {
+type CompletePhoneVerificationResponse {
   ok: Boolean!
   error: String
   token: String
 }
 
 type Mutation {
+  CompletePhoneVerification(phoneNumber: String!, key: String!): CompletePhoneVerificationResponse!
+  EmailSignIn(email: String!, password: String!): EmailSignInResponse!
   FacebookConnect(firstName: String!, lastName: String!, email: String, fbId: String!): FacebookConnectResponse!
+  StartPhoneVerification(phoneNumber: String!): StartPhoneVerificationResponse
+}
+
+type EmailSignInResponse {
+  ok: Boolean!
+  error: String
+  token: String
+}
+
+type FacebookConnectResponse {
+  ok: Boolean!
+  error: String
+  token: String
 }
 
 type User {
@@ -65,25 +80,29 @@ type User {
   phoneNumber: String
   verifiedPhoneNumber: Boolean!
   profilePhoto: String
-  createAt: String!
-  updateAt: String
   fullName: String
-  chat: Chat
-  messages: [Message]
-  verifications: [Verification]
-  ridesAsPassenger: [Ride]
-  ridesAsDriver: [Ride]
   isDriving: Boolean!
   isRiding: Boolean!
   isTaken: Boolean!
   lastLng: Float
   lastLat: Float
   lastOrientation: Float
-  fbld: String
+  fbId: String
+  chat: Chat
+  messages: [Message]
+  ridesAsPassenger: [Ride]
+  ridesAsDriver: [Ride]
+  createdAt: String!
+  updatedAt: String
 }
 
 type Query {
   user: User
+}
+
+type StartPhoneVerificationResponse {
+  ok: Boolean!
+  error: String
 }
 
 type Verification {
@@ -91,8 +110,7 @@ type Verification {
   target: String!
   payload: String!
   key: String!
-  used: Boolean!
-  user: User!
+  verified: Boolean!
   createdAt: String!
-  updatedAt: String!
+  updatedAt: String
 }

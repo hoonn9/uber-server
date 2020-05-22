@@ -6,24 +6,25 @@ import {
   BeforeUpdate,
   Column,
   CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  OneToMany,
-  ManyToOne,
 } from "typeorm";
-import Message from "./Message";
 import Chat from "./Chat";
-import Verification from "./Verification";
+import Message from "./Message";
 import Ride from "./Ride";
 
 const BCRYPT_ROUNDS = 10;
 
+@Entity()
 class User extends BaseEntity {
   @PrimaryGeneratedColumn() id: number;
 
-  @Column({ type: "text", unique: true })
+  @Column({ type: "text", nullable: true })
   @IsEmail()
-  email: String;
+  email: string | null;
 
   @Column({ type: "boolean", default: false })
   verifiedEmail: boolean;
@@ -34,13 +35,13 @@ class User extends BaseEntity {
   @Column({ type: "text" })
   lastName: string;
 
-  @Column({ type: "int" })
+  @Column({ type: "int", nullable: true })
   age: number;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", nullable: true })
   password: string;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", nullable: true })
   phoneNumber: string;
 
   @Column({ type: "boolean", default: false })
@@ -48,21 +49,6 @@ class User extends BaseEntity {
 
   @Column({ type: "text" })
   profilePhoto: string;
-
-  @ManyToOne((type) => Chat, (chat) => chat.participants)
-  chat: Chat;
-
-  @OneToMany((type) => Message, (message) => message.user)
-  messages: Message[];
-
-  @OneToMany((type) => Verification, (verification) => verification.user)
-  verifications: Verification[];
-
-  @OneToMany((type) => Ride, (ride) => ride.passenger)
-  ridesAsPassenger: Ride[];
-
-  @OneToMany((type) => Ride, (ride) => ride.driver)
-  ridesAsDriver: Ride[];
 
   @Column({ type: "boolean", default: false })
   isDriving: boolean;
@@ -83,13 +69,23 @@ class User extends BaseEntity {
   lastOrientation: number;
 
   @Column({ type: "text", nullable: true })
-  fbld: string;
+  fbId: string;
 
-  @CreateDateColumn()
-  createAt: string;
+  @ManyToOne(type => Chat, chat => chat.participants)
+  chat: Chat;
 
-  @UpdateDateColumn()
-  updateAt: string;
+  @OneToMany(type => Message, message => message.user)
+  messages: Message[];
+
+  @OneToMany(type => Ride, ride => ride.passenger)
+  ridesAsPassenger: Ride[];
+
+  @OneToMany(type => Ride, ride => ride.driver)
+  ridesAsDriver: Ride[];
+
+  @CreateDateColumn() createdAt: string;
+
+  @UpdateDateColumn() updatedAt: string;
 
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
