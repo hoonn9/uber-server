@@ -1,26 +1,24 @@
-import { CompletePhoneVerificationMutationArgs, CompletePhoneVerificationResponse } from "src/types/graph";
-import { Resolvers } from "src/types/resolvers";
-import Verification from "../../../entities/Verification";
-import User from "../../../entities/User";
+import { Resolvers } from "../../../types/resolvers";
+import { CompletePhoneVerificationMutationArgs, CompletePhoneVerificationResponse } from "../../../types/graph";
+import Verification from "src/entities/Verification";
+import User from "src/entities/User";
+import createJWT from "src/utils/createJWT";
 
 const resolvers: Resolvers = {
     Mutation: {
         CompletePhoneVerification: async (_, args: CompletePhoneVerificationMutationArgs): Promise<CompletePhoneVerificationResponse> => {
             const { phoneNumber, key } = args;
             try {
-                const verification = await Verification.findOne({
-                    payload: phoneNumber,
-                    key
-                })
+                const verification = await Verification.findOne({ payload: phoneNumber, key });
                 if (!verification) {
                     return {
                         ok: false,
-                        error: "Verification token key not valid",
+                        error: "Verification key not valid",
                         token: null
                     }
                 } else {
                     verification.verified = true;
-                    verification.save();
+                    verification.save()
                 }
             } catch (error) {
                 return {
@@ -35,10 +33,11 @@ const resolvers: Resolvers = {
                 if (user) {
                     user.verifiedPhoneNumber = true;
                     user.save();
+                    const token = createJWT(user.id);
                     return {
                         ok: true,
                         error: null,
-                        token: "soon"
+                        token
                     }
                 } else {
                     return {

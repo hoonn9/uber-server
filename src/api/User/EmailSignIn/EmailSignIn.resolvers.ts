@@ -1,6 +1,7 @@
 import { EmailSignInMutationArgs, EmailSignInResponse } from "src/types/graph";
 import { Resolvers } from "src/types/resolvers";
 import User from "../../../entities/User"
+import createJWT from "../../../utils/createJWT";
 
 const resolvers: Resolvers = {
     Mutation: {
@@ -8,6 +9,7 @@ const resolvers: Resolvers = {
             try {
                 const { email, password } = args;
                 const user = await User.findOne({ email });
+                console.log(user);
                 if (!user) {
                     return {
                         ok: false,
@@ -17,10 +19,11 @@ const resolvers: Resolvers = {
                 } else {
                     const checkPassword = await user.comparePassword(password);
                     if (checkPassword) {
+                        const token = createJWT(user.id);
                         return {
                             ok: true,
                             error: null,
-                            token: "soon"
+                            token
                         }
                     } else {
                         return {
