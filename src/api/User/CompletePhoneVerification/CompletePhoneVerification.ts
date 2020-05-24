@@ -1,15 +1,18 @@
 import { Resolvers } from "../../../types/resolvers";
 import { CompletePhoneVerificationMutationArgs, CompletePhoneVerificationResponse } from "../../../types/graph";
-import Verification from "src/entities/Verification";
-import User from "src/entities/User";
-import createJWT from "src/utils/createJWT";
+import Verification from "../../../entities/Verification";
+import User from "../../../entities/User";
+import createJWT from "../../../utils/createJWT";
 
 const resolvers: Resolvers = {
     Mutation: {
         CompletePhoneVerification: async (_, args: CompletePhoneVerificationMutationArgs): Promise<CompletePhoneVerificationResponse> => {
             const { phoneNumber, key } = args;
+            console.log("check@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             try {
+                console.log("check@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 const verification = await Verification.findOne({ payload: phoneNumber, key });
+                console.log(phoneNumber, key, verification)
                 if (!verification) {
                     return {
                         ok: false,
@@ -29,6 +32,7 @@ const resolvers: Resolvers = {
             }
 
             try {
+                console.log("check@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 const user = await User.findOne({ phoneNumber });
                 if (user) {
                     user.verifiedPhoneNumber = true;

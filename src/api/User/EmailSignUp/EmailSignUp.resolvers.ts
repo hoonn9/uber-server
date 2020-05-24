@@ -1,11 +1,13 @@
 import { Resolvers } from "../../../types/resolvers";
-import { EmailSignInMutationArgs, EmailSignInResponse } from "../../../types/graph";
+import { EmailSignUpMutationArgs, EmailSignUpResponse } from "../../../types/graph";
 import User from "../../../entities/User";
 import createJWT from "../../../utils/createJWT";
+import Verification from "../../../entities/Verification";
+import { sendVerificationEmail } from "../../../utils/sendEmail";
 
 const resolvers: Resolvers = {
     Mutation: {
-        EmailSignUp: async (_, args: EmailSignInMutationArgs): Promise<EmailSignInResponse> => {
+        EmailSignUp: async (_, args: EmailSignUpMutationArgs): Promise<EmailSignUpResponse> => {
             try {
                 const { email } = args;
                 const existingUser = await User.findOne({ email });
@@ -16,13 +18,32 @@ const resolvers: Resolvers = {
                         token: null
                     }
                 } else {
-                    const newUser = await User.create({ ...args }).save();
-                    const token = createJWT(newUser.id);
-                    return {
-                        ok: true,
-                        error: null,
-                        token
+                    const phoneVerification = await Verification.findOne({
+                        payload: args.phoneNumber,
+                        verified: true
+                    });
+                    if (phoneVerification) {
+
+                        const newUser = await User.create({ ...args }).save();
+                        if (newUser.email) {
+                            const emailVerification = await Verification.create({ payload: newUser.email, target: "EMAIL" });
+                            await sendVerificationEmail(newUser.fullName, emailVerification.key);
+                        }
+
+                        const token = createJWT(newUser.id);
+                        return {
+                            ok: true,
+                            error: null,
+                            token
+                        }
+                    } else {
+                        return {
+                            ok: false,
+                            error: "You haven't verified your phone number",
+                            token: null
+                        }
                     }
+
                 }
             } catch (error) {
                 return {
