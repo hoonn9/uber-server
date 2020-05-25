@@ -8,11 +8,8 @@ const resolvers: Resolvers = {
     Mutation: {
         CompletePhoneVerification: async (_, args: CompletePhoneVerificationMutationArgs): Promise<CompletePhoneVerificationResponse> => {
             const { phoneNumber, key } = args;
-            console.log("check@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             try {
-                console.log("check@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 const verification = await Verification.findOne({ payload: phoneNumber, key });
-                console.log(phoneNumber, key, verification)
                 if (!verification) {
                     return {
                         ok: false,
@@ -32,7 +29,6 @@ const resolvers: Resolvers = {
             }
 
             try {
-                console.log("check@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 const user = await User.findOne({ phoneNumber });
                 if (user) {
                     user.verifiedPhoneNumber = true;
