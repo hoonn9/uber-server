@@ -9,7 +9,6 @@ const resolvers: Resolvers = {
             try {
                 const { email, password } = args;
                 const user = await User.findOne({ email });
-                console.log(user);
                 if (!user) {
                     return {
                         ok: false,

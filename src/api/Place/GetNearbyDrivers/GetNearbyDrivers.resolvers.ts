@@ -16,7 +16,6 @@ const resolvers: Resolvers = {
                         lastLat: Between(lastLat - 0.05, lastLat + 0.05),
                         lastLng: Between(lastLng - 0.05, lastLng + 0.05)
                     });
-                    console.log(drivers);
                     return {
                         ok: true,
                         error: null,

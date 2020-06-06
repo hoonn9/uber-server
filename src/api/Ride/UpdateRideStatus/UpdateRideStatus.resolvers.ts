@@ -45,24 +45,28 @@ const resolvers: Resolvers = {
                             pubSub.publish("rideUpdate", { RideStatusSubscription: ride });
                             return {
                                 ok: true,
-                                error: null
+                                error: null,
+                                rideId: ride.id
                             };
                         } else {
                             return {
                                 ok: false,
-                                error: "Cant update ride"
+                                error: "Cant update ride",
+                                rideId: args.rideId
                             };
                         }
                     } catch (error) {
                         return {
                             ok: false,
-                            error: error.message
+                            error: error.message,
+                            rideId: args.rideId
                         };
                     }
                 } else {
                     return {
                         ok: false,
-                        error: "You are not driving"
+                        error: "You are not driving",
+                        rideId: args.rideId
                     };
                 }
             }

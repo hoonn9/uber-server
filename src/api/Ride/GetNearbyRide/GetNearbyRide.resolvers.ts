@@ -7,7 +7,7 @@ import privateResolver from "../../../utils/privateResolver";
 
 const resolvers: Resolvers = {
     Query: {
-        GetNearbyRides: privateResolver(
+        GetNearbyRide: privateResolver(
             async (_, __, { req }): Promise<GetNearbyRideResponse> => {
                 const user: User = req.user;
                 if (user.isDriving) {
@@ -17,7 +17,9 @@ const resolvers: Resolvers = {
                             status: "REQUESTING",
                             pickUpLat: Between(lastLat - 0.05, lastLat + 0.05),
                             pickUpLng: Between(lastLng - 0.05, lastLng + 0.05)
-                        });
+                        },
+                            { relations: ["passenger"] }
+                        );
                         if (ride) {
                             return {
                                 ok: true,
