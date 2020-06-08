@@ -24,12 +24,12 @@ const resolvers: Resolvers = {
                             ride = await Ride.findOne({
                                 id: args.rideId,
                                 status: "REQUESTING"
-                            }, { relations: ["passenger"] });
+                            }, { relations: ["driver", "passenger"] });
                             if (ride) {
                                 ride.driver = user;
                                 user.isTaken = true;
                                 user.save();
-                                const chat = await Chat.create({ driver: user, passenger: ride.passenger }).save();
+                                const chat = await Chat.create({ driver: user, passenger: ride.passenger, ride }).save();
                                 ride.chat = chat;
                                 ride.save();
                             }
